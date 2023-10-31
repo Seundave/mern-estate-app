@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -22,12 +23,14 @@ export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const fileRef = useRef(null);
   const [filePerc, setFilePerc] = useState(0);
-  cosnt[(file, setFile)] = useState(undefined);
+  const [file, setFile] = useState(undefined);
   const dispatch = useDispatch();
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setSuccessUpdate] = useState(false);
   console.log(file);
+
+  console.log(currentUser);
 
   // firebase storage
   // allow read;
@@ -55,6 +58,7 @@ export default function Profile() {
         },
         body: JSON.stringify(formData),
       });
+
       const data = (await res).json();
       if (data.success === false) {
         dispatch(updateUserFailure(data.message));
@@ -89,14 +93,16 @@ export default function Profile() {
     try {
       dispatch(signOutUserStart());
       const res = await fetch("api/auth/signout");
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(deleteUserFailure(data.message))
+      // const data = await res.json();
+
+      if (res.status === 200) {
+        dispatch(deleteUserSuccess());
+
         return;
       }
-      dispatch(deleteUserSuccess(data))
+      dispatch(deleteUserFailure());
     } catch (error) {
-      dispatch(deleteUserFailure(data.message));
+      dispatch(deleteUserFailure());
     }
   };
 
@@ -178,11 +184,18 @@ export default function Profile() {
           id="password"
         />
         <button
+          type="submit"
           disabled={loading}
           className="bg-slate-700 text-white uppercase p-3 hover:opacity-95 disabled:opacity-80"
         >
           {loading ? "Loading..." : "update"}
         </button>
+        <Link
+          to="/create-listing"
+          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95"
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span
