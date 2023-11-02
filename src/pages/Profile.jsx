@@ -28,9 +28,6 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setSuccessUpdate] = useState(false);
-  console.log(file);
-
-  console.log(currentUser);
 
   // firebase storage
   // allow read;
@@ -51,7 +48,7 @@ export default function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      const res = fetch(`api/user/update/${currentUser._id}`, {
+      const res = await fetch(`api/user/update/${currentUser._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,8 +56,9 @@ export default function Profile() {
         body: JSON.stringify(formData),
       });
 
-      const data = (await res).json();
-      if (data.success === false) {
+      const data = await res.json();
+      
+      if (!data) {
         dispatch(updateUserFailure(data.message));
         return;
       }
