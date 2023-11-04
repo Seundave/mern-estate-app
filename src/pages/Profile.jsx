@@ -31,8 +31,6 @@ export default function Profile() {
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState([]);
 
-  console.log(userListings);
-
   // firebase storage
   // allow read;
   // allow write: if
